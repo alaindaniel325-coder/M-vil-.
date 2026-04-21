@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>📱 UltraPhone · Móvil 100% Funcional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #0a0a0c;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        /* Marco del teléfono ultra realista */
+        .phone {
+            max-width: 380px;
+            width: 100%;
+            background: #010101;
+            border-radius: 48px;
+            padding: 18px 6px;
+            box-shadow: 
+                0 40px 80px rgba(0,0,0,0.9),
+                0 0 0 8px #1a1a1e,
+                0 0 0 10px #3a3a40,
+                inset 0 0 0 3px #4a4a50;
+            position: relative;
+        }
+
+        /* Botones físicos */
+        .phone::before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 120px;
+            width: 6px;
+            height: 50px;
+            background: linear-gradient(to right, #2a2a2e, #1a1a1e);
+            border-radius: 6px 0 0 6px;
+        }
+
+        .phone::after {
+            content: '';
+            position: absolute;
+            right: -12px;
+            top: 180px;
+            width: 6px;
+            height: 70px;
+            background: linear-gradient(to left, #2a2a2e, #1a1a1e);
+            border-radius: 0 6px 6px 0;
+        }
+
+        /* Dynamic Island */
+        .island {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 18px 0 24px;
+            margin-bottom: 8px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .island-center {
+            background: #000;
+            width: 115px;
+            height: 34px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid #2a2a30;
+        }
+
+        .island-camera {
+            width: 13px;
+            height: 13px;
+            background: #1a1a20;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 1px solid #3a3a44;
+        }
+
+        .island-speaker {
+            width: 42px;
+            height: 7px;
+            background: #1e1e24;
+            border-radius: 20px;
+        }
+
+        /* Pantalla */
+        .screen {
+            background: #000;
+            border-radius: 42px;
+            overflow: hidden;
+            height: 800px;
+            max-height: 85vh;
+            position: relative;
+        }
+
+        .app-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background: #f2f2f7;
+            transform: translateX(0);
+            transition: transform 0.25s ease-out;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .app-screen.hidden { transform: translateX(100%); }
+
+        /* Barra de estado */
+        .status-bar {
+            background: rgba(255,255,255,0.94);
+            backdrop-filter: blur(20px);
+            padding: 14px 24px 6px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+        }
+
+        /* Header de apps */
+        .app-header {
+            background: rgba(255,255,255,0.94);
+            backdrop-filter: blur(20px);
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            border-bottom: 0.5px solid rgba(0,0,0,0.08);
+        }
+
+        .app-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            flex: 1;
+            text-align: center;
+        }
+
+        .app-header i {
+            font-size: 22px;
+            color: #007aff;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.15s;
+        }
+
+        .app-header i:active { background: rgba(0,122,255,0.1); }
+
+        /* Contenido */
+        .content {
+            padding: 18px 14px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Widget saludo */
+        .greeting {
+            background: linear-gradient(145deg, #0066ff, #0033aa);
+            color: white;
+            padding: 24px 20px;
+            border-radius: 32px;
+        }
+
+        .greeting h1 { font-size: 28px; font-weight: 700; }
+        .greeting p { opacity: 0.9; margin-top: 6px; font-size: 16px; }
+
+        /* Grid de apps */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px 6px;
+        }
+
+        .app-icon {
+            background: rgba(255,255,255,0.95);
+            padding: 12px 4px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 0.5px solid rgba(255,255,255,0.8);
+        }
+
+        .app-icon:active { transform: scale(0.94); background: #e8e8ed; }
+
+        .app-icon i {
+            font-size: 28px;
+            color: #007aff;
+            background: #e8f0fe;
+            padding: 10px;
+            border-radius: 20px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-icon span { font-size: 11px; font-weight: 500; color: #1c1c1e; }
+
+        /* Dock */
+        .dock {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(30px);
+            padding: 12px 24px 18px;
+            display: flex;
+            justify-content: space-around;
+            position: sticky;
+            bottom: 0;
+            z-index: 30;
+            border-top: 0.5px solid rgba(0,0,0,0.1);
+        }
+
+        .dock-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #5c5c5e;
+            font-size: 11px;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .dock-item i { font-size: 24px; margin-bottom: 4px; }
+        .dock-item.active { color: #007aff; }
+
+        /* Listas */
+        .file-item, .contact-item, .note-item {
+            background: white;
+            padding: 14px 16px;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            border: 0.5px solid rgba(0,0,0,0.05);
+        }
+
+        .file-item:active, .contact-item:active { background: #e8e8ed; }
+
+        .file-item i, .contact-item i {
+            width: 40px;
+            font-size: 24px;
+            color: #007aff;
+        }
+
+        .file-info { flex: 1; }
+        .file-name { font-weight: 600; font-size: 15px; }
+        .file-size { font-size: 13px; color: #8e8e93; }
+
+        /* Galería */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: #1c1c1e;
+        }
+
+        .gallery img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* Música */
+        .music-player {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .album-art {
+            width: 200px;
+            height: 200px;
+            border-radius: 24px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 60px;
+        }
+
+        .song-title { font-size: 20px; font-weight: 700; }
+        .song-artist { color: #8e8e93; margin: 4px 0 20px; }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #d1d1d6;
+            border-radius: 2px;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #007aff;
+            border-radius: 2px;
+        }
+
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 10px;
+        }
+
+        .play-btn {
+            width: 65px;
+            height: 65px;
+            background: #007aff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        /* Cámara */
+        .camera-view {
+            height: calc(100% - 60px);
+            display: flex;
+            flex-direction: column;
+            background: #000;
+        }
+
+        #cameraVideo {
+            width: 100%;
+            flex: 1;
+            object-fit: cover;
+        }
+
+        .camera-controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .shutter {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid #555;
+            cursor: pointer;
+        }
+
+        /* Calculadora */
+        .calc-display {
+            background: #1c1c1e;
+            color: white;
+            padding: 30px 20px;
+            font-size: 48px;
+            text-align: right;
+            min-height: 120px;
+            word-wrap: break-word;
+        }
+
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: #3a3a3c;
+        }
+
+        .calc-btn {
+            background: #2c2c2e;
+            color: white;
+            border: none;
+            font-size: 28px;
+            padding: 20px;
+            cursor: pointer;
+        }
+
+        .calc-btn:active { opacity: 0.7; }
+        .calc-btn.operator { background: #ff9f0a; }
+        .calc-btn.equal { background: #007aff; }
+
+        /* Mensajes */
+        .message-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+
+        .message-sent {
+            background: #007aff;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-received {
+            background: #e9e9ef;
+            color: #1c1c1e;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-input-area {
+            display: flex;
+            padding: 12px;
+            background: white;
+            border-top: 0.5px solid #c6c6c8;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #d1d1d6;
+            border-radius: 36px;
+            outline: none;
+        }
+
+        .send-btn {
+            background: #007aff;
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        /* Toast */
+        .toast {
+            background: rgba(28,28,30,0.95);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .toast.show { opacity: 1; }
+
+        /* Home indicator */
+        .home-bar {
+            width: 130px;
+            height: 5px;
+            background: #1c1c1e;
+            border-radius: 40px;
+            margin: 8px auto;
+        }
+
+        /* Inputs ocultos */
+        #fileInput, #imageInput, #audioInput, #videoInput {
+            display: none;
+        }
+
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body>
+<div class="phone">
+    <div class="island">
+        <span id="timeDisplay">9:41</span>
+        <div class="island-center">
+            <div class="island-camera"></div>
+            <div class="island-speaker"></div>
+        </div>
+        <span><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
+    </div>
+
+    <div class="screen">
+        <!-- HOME -->
+        <div class="app-screen" id="homeScreen">
+            <div class="status-bar">
+                <span id="statusTime">9:41</span>
+                <span><i class="fas fa-wifi"></i> <i class="fas fa-battery-three-quarters"></i></span>
+            </div>
+            <div class="content">
+                <div class="greeting">
+                    <h1 id="greetingName">Hola</h1>
+                    <p><i class="fas fa-map-pin"></i> <span id="weatherInfo">Cargando clima...</span></p>
+                </div>
+                
+                <div class="app-grid">
+                    <div class="app-icon" data-app="files"><i class="fas fa-folder-open"></i><span>Archivos</span></div>
+                    <div class="app-icon" data-app="gallery"><i class="fas fa-images"></i><span>Galería</span></div>
+                    <div class="app-icon" data-app="music"><i class="fas fa-music"></i><span>Música</span></div>
+                    <div class="app-icon" data-app="camera"><i class="fas fa-camera"></i><span>Cámara</span></div>
+                    <div class="app-icon" data-app="videos"><i class="fas fa-video"></i><span>Videos</span></div>
+                    <div class="app-icon" data-app="messages"><i class="fas fa-comment-dots"></i><span>Mensajes</span></div>
+                    <div class="app-icon" data-app="phone"><i class="fas fa-phone-alt"></i><span>Teléfono</span></div>
+                    <div class="app-icon" data-app="calculator"><i class="fas fa-calculator"></i><span>Calculadora</span></div>
+                    <div class="app-icon" data-app="notes"><i class="fas fa-sticky-note"></i><span>Notas</span></div>
+                    <div class="app-icon" data-app="browser"><i class="fas fa-globe"></i><span>Navegador</span></div>
+                    <div class="app-icon" data-app="contacts"><i class="fas fa-address-book"></i><span>Contactos</span></div>
+                    <div class="app-icon" data-app="settings"><i class="fas fa-cog"></i><span>Ajustes</span></div>
+                </div>
+            </div>
+            <div class="dock">
+                <div class="dock-item active" data-dock="home"><i class="fas fa-home"></i><span>Inicio</span></div>
+                <div class="dock-item" data-dock="files"><i class="fas fa-folder"></i><span>Archivos</span></div>
+                <div class="dock-item" data-dock="gallery"><i class="fas fa-images"></i><span>Galería</span></div>
+                <div class="dock-item" data-dock="music"><i class="fas fa-headphones"></i><span>Música</span></div>
+            </div>
+            <div class="home-bar"></div>
+        </div>
+
+        <!-- ARCHIVOS -->
+        <div class="app-screen hidden" id="filesScreen">
+            <div class="app-header">
+                <i class="fas fa-arrow-left" onclick="goHome()"></i>
+                <h2>Archivos</h2>
+                <i class="fas fa-folder-plus" onclick="document.getElementById('fileInput').click()"></i>
+            </div>
+            <div class="content" id="fileList">
+                <div style="text-align:center; padding:50px; color:#8e8e93;" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size:50px; opacity:0.5;"></i>
+                    <p style="margin-top:15px;">Toca para seleccionar archivos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- GALERÍA -->
+        <div class="app-screen hidden" id="galleryScreen">
+            <div class="app-header">
+                <i class="fas fa-arrow-left" onclick="goHome()"></i>
+                <h2>Galería</h2>
+                <i class="fas fa-folder-plus" onclick="document.getElementById('imageInput').click()"></i>
+            </div>
+            <div class="gallery" id="galleryGrid">
+                <div style="grid-column:span 3; text-align:center; padding:60px; color:#8e8e93;" onclick="document.getElementById('imageInput').click()">
+                    <i class="fas fa-images" style="font-size:60px; opacity:0.4;"></i>
+                    <p>Toca para cargar imágenes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÚSICA -->
+        <div class="app-screen hidden" id="musicScreen">
+            <div class="app-header">
+                <i class="fas fa-arrow-left" onclick="goHome()"></i>
+                <h2>Música</h2>
+                <i class="fas fa-folder-music" onclick="document.getElementById('audioInput').click()"></i>
+            </div>
+            <div class="music-player">
+                <div class="album-art" id="albumArt">🎵</div>
+                <div class="song-title" id="songTitle">Selecciona una canción</div>
+                <div class="song-artist" id="songArtist">Toca el ícono de carpeta</div>
+                <div class="progress-bar" onclick="seekMusic(event)">
+                    <div class="progress-fill" id="musicProgress"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; color:#8e8e93;">
+                    <span id="currentTime">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+                <div class="music-controls">
+                    <i class="fas fa-backward" onclick="prevSong()"></i>
+                    <div class="play-btn" onclick="togglePlay()">
+                        <i class="fas fa-play" id="playIcon"></i>
+                    </div>
+                    <i class="fas fa-forward" onclick="nextSong()"></i>
+                </div>
+                <div id="playlist"></div>
+            </div>
+            <audio id="audioPlayer"></audio>
+        </div>
+
+        <!-- CÁMARA -->
+        <div class="app-screen hidden" id="cameraScreen">
+            <div class="app-header" style="background:#000; color:white;">
+                <i class="fas fa-arrow-left" style="color:white;" onclick="goHome(); stopCamera()"></i>
+                <h2 style="color:white;">Cámara</h2>
+                <i class="fas fa-flash" style="color:white;"></i>
+            </div>
+            <div class="camera-view">
+                <video id="cameraVideo" autoplay playsinline></video>
+                <img id="capturedPhoto" style="display:none; width:100%; flex:1; object-fit:cover;">
+                <div class="camera-controls">
+                    <i class="fas fa-images" style="color:white; font-size:26px;" onclick="switchToGallery()"></i>
+                    <div class="shutter" onclick="takePhoto()"></div>
+                    <i class="fas fa-sync-alt" style="color:white; font-size:26px;" onclick="switchCamera()"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIDEOS -->
+        <div class="app-screen hidden" id="videosScreen">
+            <div class="app-header">
+                <i class="fas fa-arrow-left" onclick="goHome()"></i>
+                <h2>Videos</h2>
+                <i class="fas fa-folder-video" onclick="document.getElementById('videoInput').click()"></i>
+            </div>
+            <div class="content" id="videoList">
+                <div style="text-align:center; padding:50px;" onclick="document.getElementById('videoInput').click()">
+                    <i class="fas fa-video" style="font-size:60px; opacity:0.4;"></i>
+                    <p>Toca para cargar videos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENSAJES -->
+        <div class="app-screen hidden" id="messagesScreen">
+            <div class="app-header">
+                <i class="fas fa-arrow-left" onclick="goHome()"></i>
+                <h2>Mensajes</h2>
+                <i class="fas fa-pen"></i>
+            </div>
+            <div style="flex:1; overflow-y:auto; padding:14px;" id="messagesContainer">
+                <div class="message-bubble message-received">¡Hola! ¿Cómo estás?</div>
+                <div class="message-bubble message-sent">¡Bien! ¿Y tú?</div>
+            </div>
+            <div class="message-input-area">
+                <input class="message-input" id="messageInput" placeholder="Escribe un mensaje...">
+                <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+        <!-- TELÉFONO -->
+        <div class="app-screen hidden" id="phoneScreen">
+            <div class="app-header">
+                <i class="fas fa-arrow-left" onclick="goHome()"></i>
+                <h2>Teléfono</h2>
+                <i class="fas fa-plus"></i>
+            </div>
+            <div style="text-align:center; padding:30px;">
+                <div style="font-size:40px; margin-bottom:30px;" id="phoneNumber">(555) 123-4567</div>
+                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; max-width:260px; margin:0 auto;" id="dialpad"></div>
+                <button onclick="makeCall()" style="margin-top:30px; background:#34c759; color:white; border:none; padding:16px 40px; border-radius:40px; font-size:18px;"><i class="fas fa-phone-alt"></i> Llamar</button>
+            </div>
+        </div>
+
+        <!-- CALCULADORA -->
+        <div class="app-screen hidden" id="calculatorScreen">
+            <div class="app-header">
+                <i class="fas fa-arrow-left" onclick="goHome()"></i>
+                <h2>Calculadora</h2>
+                <i class="fas fa-trash" onclick="clearCalc()"></i>
+            </div>
+            <div class="calc-display" id="calcDisplay">0</div>
+            <div class="calc-buttons" id="calcButtons"></div>
+        </div>
+
+        <!-- NOTAS -->
+        <div class="app-screen hidden" id="notesScreen">
+            <div class="app-header">
+                <i class="fas fa-arrow-left" onclick="goHome()"></i>
+                <h2>Notas</h2>
+                <i class="fas fa-trash" onclick="clearNotes()"></i>
+            </div>
+            <div class="content">
+                <input class="message-input" id="noteInput" placeholder="Escribe una nota..." style="width:100%;">
+                <button onclick="addNote()" style="background:#007aff; color:white; border:none; padding:14px; border-radius:30px; font-weight:600;">Añadir nota</button>
+                <div id="notesList"></div>
+            </div>
+        </div>
+
+        <!-- NAVEGADOR -->
+        <div class="app-screen hidden" id="browserScreen">
+            <div class="app-header">
+                <i class="fas fa-arrow-left" onclick="goHome()"></i>
+                <h2>Navegador</h2>
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+            <div style="padding:12px;">
+                <div style="display:flex; gap:8px; margin-bottom:12px;">
+                    <input id="urlInput" value="https://www.google.com" style="flex:1; padding:12px; border:1px solid #d1d1d6; border-radius:30px;">
+                    <button onclick="loadUrl()" style="background:#007aff; color:white; border:none; padding:0 20px; border-radius:30px;">Ir</button>
+                </div>
+                <iframe id="browserFrame" style="width:100%; height:550px; border:none; border-radius:16px;"></iframe>
+            </div>
+        </div>
+
+        <!-- CONTACTOS -->
+        <div class="app-screen hidden" id="contactsScreen">
+            <div class="app-header">
+                <i class="fas fa-arrow-left" onclick="goHome()"></i>
+                <h2>Contactos</h2>
+                <i class="fas fa-plus" onclick="addContact()"></i>
+            </div>
+            <div class="content" id="contactsList"></div>
+        </div>
+
+        <!-- AJUSTES -->
+        <div class="app-screen hidden" id="settingsScreen">
+            <div class="app-header">
+                <i class="fas fa-arrow-left" onclick="goHome()"></i>
+                <h2>Ajustes</h2>
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="content">
+                <div style="background:white; border-radius:16px;">
+                    <div style="padding:16px; display:flex; gap:14px;">
+                        <i class="fas fa-user-circle" style="font-size:48px; color:#007aff;"></i>
+                        <div><div style="font-weight:700;" id="profileName">Usuario</div></div>
+                    </div>
+                    <div style="padding:16px; border-top:0.5px solid #c6c6c8;" onclick="editProfile()">
+                        <span><i class="fas fa-user"></i> Nombre</span>
+                        <span id="profileValue" style="float:right;">Carlos</span>
+                    </div>
+                    <div style="padding:16px; border-top:0.5px solid #c6c6c8;" onclick="toggleWiFi()">
+                        <span><i class="fas fa-wifi"></i> Wi-Fi</span>
+                        <span id="wifiStatus" style="float:right;">Activado</span>
+                    </div>
+                    <div style="padding:16px; border-top:0.5px solid #c6c6c8;" onclick="toggleBluetooth()">
+                        <span><i class="fas fa-bluetooth-b"></i> Bluetooth</span>
+                        <span id="btStatus" style="float:right;">Activado</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+</div>
+
+<!-- Inputs de archivos -->
+<input type="file" id="fileInput" multiple>
+<input type="file" id="imageInput" accept="image/*" multiple>
+<input type="file" id="audioInput" accept="audio/*" multiple>
+<input type="file" id="videoInput" accept="video/*" multiple>
+
+<script>
+    'use strict';
+
+    // ========== SISTEMA DE NAVEGACIÓN ==========
+    const screens = {
+        home: 'homeScreen', files: 'filesScreen', gallery: 'galleryScreen',
+        music: 'musicScreen', camera: 'cameraScreen', videos: 'videosScreen',
+        messages: 'messagesScreen', phone: 'phoneScreen', calculator: 'calculatorScreen',
+        notes: 'notesScreen', browser: 'browserScreen', contacts: 'contactsScreen',
+        settings: 'settingsScreen'
+    };
+    let currentScreen = 'home';
+
+    function showScreen(screenId) {
+        Object.values(screens).forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        document.getElementById(screens[screenId]).classList.remove('hidden');
+        currentScreen = screenId;
+        
+        document.querySelectorAll('.dock-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.dock === screenId);
+        });
+        
+        if (screenId === 'camera') startCamera();
+        else if (currentScreen !== 'camera') stopCamera();
+        
+        if (screenId === 'browser') document.getElementById('browserFrame').src = 'https://www.google.com/webhp?igu=1';
+    }
+
+    function goHome() { showScreen('home'); }
+    function switchToGallery() { stopCamera(); showScreen('gallery'); }
+
+    // ========== RELOJ ==========
+    function updateClock() {
+        const d = new Date();
+        const t = d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
+        document.querySelectorAll('#timeDisplay, #statusTime').forEach(el => el.textContent = t);
+    }
+    updateClock(); setInterval(updateClock, 1000);
+
+    // ========== TOAST ==========
+    function toast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg; t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    // ========== ARCHIVOS ==========
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        if (!files.length) return;
+        
+        const html = files.map(f => {
+            const icon = f.type.startsWith('image/') ? 'fa-image' : 
+                        f.type.startsWith('audio/') ? 'fa-music' : 
+                        f.type.startsWith('video/') ? 'fa-video' : 'fa-file';
+            return `
+                <div class="file-item" onclick="openFile('${f.name}', '${f.type}', '${URL.createObjectURL(f)}')">
+                    <i class="fas ${icon}"></i>
+                    <div class="file-info">
+                        <div class="file-name">${f.name}</div>
+                        <div class="file-size">${(f.size / 1024).toFixed(1)} KB</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        document.getElementById('fileList').innerHTML = html;
+        window.allFiles = files;
+        toast(`📁 ${files.length} archivos cargados`);
+        showScreen('files');
+    });
+
+    function openFile(name, type, url) {
+        if (type.startsWith('image/')) {
+            document.getElementById('galleryGrid').innerHTML = `<img src="${url}" alt="${name}" style="width:100%; height:auto;">`;
+            showScreen('gallery');
+        } else if (type.startsWith('audio/')) {
+            musicFiles = [{ name, url }];
+            loadSong(0);
+            showScreen('music');
+        } else if (type.startsWith('video/')) {
+            window.open(url, '_blank');
+        } else {
+            toast(`📄 ${name}`);
+        }
+    }
+
+    // ========== GALERÍA ==========
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        if (!files.length) return;
+        
+        const html = files.map(f => {
+            const url = URL.createObjectURL(f);
+            return `<img src="${url}" alt="${f.name}" onclick="toast('📸 ${f.name}')">`;
+        }).join('');
+        
+        document.getElementById('galleryGrid').innerHTML = html;
+        toast(`🖼️ ${files.length} imágenes`);
+        showScreen('gallery');
+    });
+
+    // ========== MÚSICA ==========
+    let musicFiles = [];
+    let currentSong = -1;
+    let playing = false;
+
+    document.getElementById('audioInput').addEventListener('change', function(e) {
+        musicFiles = Array.from(e.target.files).map(f => ({
+            name: f.name,
+            url: URL.createObjectURL(f)
+        }));
+        updatePlaylist();
+        if (musicFiles.length) {
+            loadSong(0);
+            toast(`🎵 ${musicFiles.length} canciones`);
+        }
+        showScreen('music');
+    });
+
+    function updatePlaylist() {
+        document.getElementById('playlist').innerHTML = musicFiles.map((s, i) => `
+            <div style="padding:12px; background:white; border-radius:14px; margin-top:8px; cursor:pointer;" onclick="loadSong(${i})">
+                <i class="fas fa-music" style="color:#007aff;"></i> ${s.name}
+            </div>
+        `).join('');
+    }
+
+    function loadSong(i) {
+        currentSong = i;
+        const audio = document.getElementById('audioPlayer');
+        audio.src = musicFiles[i].url;
+        document.getElementById('songTitle').textContent = musicFiles[i].name;
+        document.getElementById('songArtist').textContent = 'Tu biblioteca';
+        
+        audio.onloadedmetadata = () => {
+            document.getElementById('duration').textContent = formatTime(audio.duration);
+        };
+        audio.ontimeupdate = () => {
+            const p = (audio.currentTime / audio.duration) * 100 || 0;
+            document.getElementById('musicProgress').style.width = p + '%';
+            document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
+        };
+        if (playing) audio.play();
+    }
+
+    function formatTime(s) {
+        const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+        return m + ':' + String(sec).padStart(2, '0');
+    }
+
+    function togglePlay() {
+        const audio = document.getElementById('audioPlayer');
+        const icon = document.getElementById('playIcon');
+        if (playing) {
+            audio.pause();
+            icon.className = 'fas fa-play';
+        } else {
+            if (currentSong === -1 && musicFiles.length) loadSong(0);
+            audio.play();
+            icon.className = 'fas fa-pause';
+        }
+        playing = !playing;
+    }
+
+    function nextSong() {
+        if (!musicFiles.length) return;
+        currentSong = (currentSong + 1) % musicFiles.length;
+        loadSong(currentSong);
+        if (playing) document.getElementById('audioPlayer').play();
+    }
+
+    function prevSong() {
+        if (!musicFiles.length) return;
+        currentSong = (currentSong - 1 + musicFiles.length) % musicFiles.length;
+        loadSong(currentSong);
+        if (playing) document.getElementById('audioPlayer').play();
+    }
+
+    function seekMusic(e) {
+        const audio = document.getElementById('audioPlayer');
+        if (audio.duration) audio.currentTime = (e.offsetX / e.currentTarget.offsetWidth) * audio.duration;
+    }
+
+    // ========== CÁMARA ==========
+    let stream = null;
+    let facing = 'environment';
+
+    async function startCamera() {
+        try {
+            if (stream) stream.getTracks().forEach(t => t.stop());
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing } });
+            document.getElementById('cameraVideo').srcObject = stream;
+            document.getElementById('cameraVideo').style.display = 'block';
+            document.getElementById('capturedPhoto').style.display = 'none';
+        } catch (e) { toast('⚠️ Cámara no disponible'); }
+    }
+
+    function stopCamera() {
+        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    }
+
+    function switchCamera() {
+        facing = facing === 'environment' ? 'user' : 'environment';
+        startCamera();
+    }
+
+    function takePhoto() {
+        const video = document.getElementById('cameraVideo');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        const img = document.getElementById('capturedPhoto');
+        img.src = canvas.toDataURL('image/jpeg');
+        img.style.display = 'block';
+        video.style.display = 'none';
+        toast('📸 Foto guardada');
+        setTimeout(() => { video.style.display = 'block'; img.style.display = 'none'; }, 1500);
+    }
+
+    // ========== VIDEOS ==========
+    document.getElementById('videoInput').addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        if (!files.length) return;
+        
+        document.getElementById('videoList').innerHTML = files.map(f => `
+            <div class="file-item" onclick="window.open('${URL.createObjectURL(f)}')">
+                <i class="fas fa-play-circle"></i>
+                <div>${f.name} (${(f.size / 1024 / 1024).toFixed(1)} MB)</div>
+            </div>
+        `).join('');
+        toast(`🎬 ${files.length} videos`);
+        showScreen('videos');
+    });
+
+    // ========== MENSAJES ==========
+    function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const msg = input.value.trim();
+        if (msg) {
+            document.getElementById('messagesContainer').innerHTML += `
+                <div class="message-bubble message-sent">${msg}</div>
+            `;
+            input.value = '';
+            setTimeout(() => {
+                document.getElementById('messagesContainer').innerHTML += `
+                    <div class="message-bubble message-received">👍 Recibido</div>
+                `;
+            }, 800);
+        }
+    }
+
+    // ========== TELÉFONO ==========
+    const dialpad = document.getElementById('dialpad');
+    for (let i = 1; i <= 9; i++) {
+        dialpad.innerHTML += `<div style="padding:16px; background:#e8e8ed; border-radius:50px; font-size:24px; cursor:pointer;" onclick="addDigit('${i}')">${i}</div>`;
+    }
+    dialpad.innerHTML += `<div style="padding:16px; background:#e8e8ed; border-radius:50px; cursor:pointer;" onclick="addDigit('*')">*</div>`;
+    dialpad.innerHTML += `<div style="padding:16px; background:#e8e8ed; border-radius:50px; cursor:pointer;" onclick="addDigit('0')">0</div>`;
+    dialpad.innerHTML += `<div style="padding:16px; background:#e8e8ed; border-radius:50px; cursor:pointer;" onclick="addDigit('#')">#</div>`;
+
+    let phoneNum = '(555) 123-4567';
+    function addDigit(d) {
+        toast('📞 ' + d);
+    }
+    function makeCall() {
+        toast('📞 Llamando a ' + phoneNum);
+    }
+
+    // ========== CALCULADORA ==========
+    let calcValue = '0';
+    let calcOperator = null;
+    let calcPrev = null;
+
+    const calcButtons = [
+        'C', '±', '%', '÷',
+        '7', '8', '9', '×',
+        '4', '5', '6', '-',
+        '1', '2', '3', '+',
+        '0', '.', '='
+    ];
+
+    const calcDiv = document.getElementById('calcButtons');
+    calcButtons.forEach(btn => {
+        const b = document.createElement('button');
+        b.className = 'calc-btn' + (['÷','×','-','+','='].includes(btn) ? ' operator' : '') + (btn === '=' ? ' equal' : '');
+        b.textContent = btn;
+        b.onclick = () => handleCalc(btn);
+        calcDiv.appendChild(b);
+    });
+
+    function handleCalc(key) {
+        const display = document.getElementById('calcDisplay');
+        if (key === 'C') {
+            calcValue = '0';
+            calcOperator = null;
+            calcPrev = null;
+        } else if (key === '±') {
+            calcValue = String(-parseFloat(calcValue));
+        } else if (key === '%') {
+            calcValue = String(parseFloat(calcValue) / 100);
+        } else if (['÷','×','-','+'].includes(key)) {
+            calcPrev = parseFloat(calcValue);
+            calcOperator = key;
+            calcValue = '0';
+        } else if (key === '=') {
+            if (calcOperator && calcPrev !== null) {
+                const curr = parseFloat(calcValue);
+                let result;
+                switch (calcOperator) {
+                    case '+': result = calcPrev + curr; break;
+                    case '-': result = calcPrev - curr; break;
+                    case '×': result = calcPrev * curr; break;
+                    case '÷': result = calcPrev / curr; break;
+                }
+                calcValue = String(result);
+                calcOperator = null;
+                calcPrev = null;
+            }
+        } else if (key === '.') {
+            if (!calcValue.includes('.')) calcValue += '.';
+        } else {
+            if (calcValue === '0') calcValue = key;
+            else calcValue += key;
+        }
+        display.textContent = calcValue;
+    }
+
+    function clearCalc() {
+        calcValue = '0';
+        calcOperator = null;
+        calcPrev = null;
+        document.getElementById('calcDisplay').textContent = '0';
+    }
+
+    // ========== NOTAS ==========
+    let notes = JSON.parse(localStorage.getItem('notes') || '[]');
+
+    function renderNotes() {
+        document.getElementById('notesList').innerHTML = notes.map((n, i) => `
+            <div class="note-item">
+                ${n}
+                <i class="fas fa-trash" style="margin-left:auto; color:#999;" onclick="deleteNote(${i})"></i>
+            </div>
+        `).join('');
+    }
+
+    function addNote() {
+        const input = document.getElementById('noteInput');
+        const text = input.value.trim();
+        if (text) {
+            notes.push(text);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes();
+            input.value = '';
+            toast('📝 Nota guardada');
+        }
+    }
+
+    function deleteNote(i) {
+        notes.splice(i, 1);
+        localStorage.setItem('notes', JSON.stringify(notes));
+        renderNotes();
+    }
+
+    function clearNotes() {
+        notes = [];
+        localStorage.setItem('notes', JSON.stringify(notes));
+        renderNotes();
+        toast('🗑️ Notas eliminadas');
+    }
+
+    // ========== NAVEGADOR ==========
+    function loadUrl() {
+        const url = document.getElementById('urlInput').value;
+        document.getElementById('browserFrame').src = url.startsWith('http') ? url : 'https://' + url;
+    }
+
+    // ========== CONTACTOS ==========
+    let contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+
+    function renderContacts() {
+        document.getElementById('contactsList').innerHTML = contacts.map((c, i) => `
+            <div class="contact-item">
+                <i class="fas fa-user-circle"></i>
+                <div style="flex:1;">
+                    <div style="font-weight:600;">${c.name}</div>
+                    <div style="color:#8e8e93;">${c.phone}</div>
+                </div>
+                <i class="fas fa-phone" style="color:#007aff;" onclick="toast('📞 Llamando a ${c.name}')"></i>
+                <i class="fas fa-trash" style="color:#999; margin-left:10px;" onclick="deleteContact(${i})"></i>
+            </div>
+        `).join('');
+    }
+
+    function addContact() {
+        const name = prompt('Nombre:');
+        const phone = prompt('Teléfono:');
+        if (name && phone) {
+            contacts.push({ name, phone });
+            localStorage.setItem('contacts', JSON.stringify(contacts));
+            renderContacts();
+        }
+    }
+
+    function deleteContact(i) {
+        contacts.splice(i, 1);
+        localStorage.setItem('contacts', JSON.stringify(contacts));
+        renderContacts();
+    }
+
+    // ========== AJUSTES ==========
+    let userName = localStorage.getItem('userName') || 'Carlos';
+    let wifi = true, bluetooth = true;
+
+    function editProfile() {
+        const n = prompt('Nombre:', userName);
+        if (n) {
+            userName = n;
+            localStorage.setItem('userName', n);
+            document.getElementById('greetingName').textContent = 'Hola, ' + n;
+            document.getElementById('profileName').textContent = n;
+            document.getElementById('profileValue').textContent = n;
+        }
+    }
+
+    function toggleWiFi() {
+        wifi = !wifi;
+        document.getElementById('wifiStatus').textContent = wifi ? 'Activado' : 'Desactivado';
+        toast(wifi ? '📶 Wi-Fi activado' : '📴 Wi-Fi desactivado');
+    }
+
+    function toggleBluetooth() {
+        bluetooth = !bluetooth;
+        document.getElementById('btStatus').textContent = bluetooth ? 'Activado' : 'Desactivado';
+        toast(bluetooth ? '🔵 Bluetooth activado' : '⚪ Bluetooth desactivado');
+    }
+
+    // ========== CLIMA ==========
+    navigator.geolocation?.getCurrentPosition(async (pos) => {
+        try {
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current_weather=true`);
+            const d = await r.json();
+            document.getElementById('weatherInfo').textContent = `${d.current_weather.temperature}°C · Tu ubicación`;
+        } catch (e) {
+            document.getElementById('weatherInfo').textContent = '📍 Ubicación obtenida';
+        }
+    }, () => {
+        document.getElementById('weatherInfo').textContent = '🌍 Clima no disponible';
+    });
+
+    // ========== INICIALIZACIÓN ==========
+    document.querySelectorAll('[data-app]').forEach(el => {
+        el.addEventListener('click', () => showScreen(el.dataset.app));
+    });
+    document.querySelectorAll('[data-dock]').forEach(el => {
+        el.addEventListener('click', () => showScreen(el.dataset.dock));
+    });
+
+    document.getElementById('greetingName').textContent = 'Hola, ' + userName;
+    document.getElementById('profileName').textContent = userName;
+    document.getElementById('profileValue').textContent = userName;
+    renderNotes();
+    renderContacts();
+    toast('📱 UltraPhone · Todo funciona');
+</script>
+</body>
+</html>
